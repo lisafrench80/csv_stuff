@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Language" content="en-us"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=windows-1252"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+	<link type="text/css" rel="stylesheet" media="all" href="https://www.apsmemberservices.com/apswebforms/client/USCB/css/recurringForm.css"></link>
+	<style>
+	p { margin: .5em }
+form { margin-top: 2em }
+input { font-size: 100%; color: #656565; border: 0 none }
+button {
+  outline-style: none;
+  border: none 0;
+  cursor:pointer;
+}
+label { display: block; margin: .5em }
+.error { font-weight: bold; color: #f00 }
+
+#login ul#nav li { display: none }
+
+#login-form .label {
+  display: inline-block;
+  width: 74px; padding: 5px 0;
+  text-align: left;
+}
+#login-form input {
+  width: 165px; height: 1.2em; padding: 3px 2px; border: solid 1px #b8b8b8 }
+#login-form button { position: relative; left: 95px; width: 165px; height:25px; }
+
+#account-access input { border: 0 none }
+#account-access button { width: 165px }
+</style>
+<script>
+
+function setCookie(cname,cvalue,exdays)
+{
+var d = new Date();
+d.setTime(d.getTime()+(exdays*24*60*60*1000));
+var expires = "expires="+d.toGMTString();
+document.cookie = cname+"="+cvalue+"; "+expires + ";domain=.apsmemberservices.com;path=/";
+}
+
+function getCookie(cname)
+{
+var name = cname + "=";
+var ca = document.cookie.split(';');
+for(var i=0; i<ca.length; i++) 
+  {
+  var c = ca[i].trim();
+  if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+  }
+return "";
+}
+
+function checkCookie()
+{
+var user=getCookie("username");
+if (user!="")
+  {
+  window.location.href ="#" 
+  }
+else 
+  {
+  if (user!="" && user!=null)
+    {
+    setCookie("username",user,1);
+    }
+  }
+}
+
+</script>
+<script>
+	jQuery(function($) {
+		$.get("uscb_csv.csv", function(csv) {
+			var rows = csv.split("\r\n")
+			var headers = rows.shift()
+			var cells = rows.map(function(el) {
+				return el.split(',')
+			})
+			
+			for(var i = 0, len = cells.length; i < len; i++) {
+				var currentRow = cells[i]
+				
+				for(var j = 0, len = cells[0].length; j++) {
+					
+				}
+			}
+			
+		})
+	})
+</script>
+</head>
+<body>
+<div id="wrapperbg">
+	<div id="paynowtop">
+<div id="header">
+	    <img src="http://www.apsmemberservices.com/apswebforms/client/USCB/img/logo.png" alt="Logo" class="floatleft">
+	    <div id="navbox">
+	        <p><img src="http://www.apsmemberservices.com/apswebforms/client/USCB/img/management.png" alt="Management"></p>
+	    </div>
+	</div>
+	<div id="content" style="margin-left:225px;">
+<form id="login-form" name="loginForm">
+  <label>
+    <span class="label">Client number: </span>
+    <input type="text" name="client_number" value="" id="client_number">
+  </label>
+ <button type="submit" name="login" onclick="userCookie()">
+    Submit
+  </button><br /><span style="display: block; position: relative; margin: 5px -80px 0 0">(<a href="http://apsmemberservices.com/member/login/hint">I forgot my password</a>)</span>
+</form>
+
+	</div>
+</div>
+<div id="footerContain">
+		<div id="footer">&copy; 2016 USCB, Inc. and USCB America &reg; | All rights reserved </div>
+	</div>
+</div>
+<script>
+        function userCookie()
+        {
+            var UMcustom7 = document.getElementById("UMcustom7").value;
+            setCookie("username",UMcustom7,30);
+            checkCookie();
+        }
+</script>
+</body>
+</html>
