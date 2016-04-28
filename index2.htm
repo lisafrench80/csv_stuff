@@ -1,9 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 	<meta http-equiv="Content-Language" content="en-us"/>
 	<meta http-equiv="Content-Type" content="text/html; charset=windows-1252"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link type="text/css" rel="stylesheet" media="all" href="https://www.apsmemberservices.com/apswebforms/client/USCB/css/recurringForm.css"></link>
 	<style>
 	p { margin: .5em }
@@ -31,6 +31,7 @@ label { display: block; margin: .5em }
 #account-access input { border: 0 none }
 #account-access button { width: 165px }
 </style>
+<script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
 <script>
 
 function setCookie(cname,cvalue,exdays)
@@ -45,7 +46,7 @@ function getCookie(cname)
 {
 var name = cname + "=";
 var ca = document.cookie.split(';');
-for(var i=0; i<ca.length; i++) 
+for(var i=0; i<ca.length; i++)
   {
   var c = ca[i].trim();
   if (c.indexOf(name)==0) return c.substring(name.length,c.length);
@@ -58,9 +59,9 @@ function checkCookie()
 var user=getCookie("username");
 if (user!="")
   {
-  window.location.href ="#" 
+  window.location.href ="#"
   }
-else 
+else
   {
   if (user!="" && user!=null)
     {
@@ -72,22 +73,55 @@ else
 </script>
 <script>
 	jQuery(function($) {
+    var client_id_map = null;
+
+    var url_map = {
+      "USCB -KAISER": "http://localhost/KAISER",
+      "USCB- AMERICA": "http://localhost/AMERICA",
+      "USCB - LA COUNTY": "http://localhost/LACOUNTY",
+      "USCB STANFORD HEALTHCARE": "http://localhost/STANFORDHEALTHCARE",
+      "USCB - UC DAVIS MED": "http://localhost/DAVISMED",
+      "USCB UCLA MEDICAL": "http://localhost/UCLAMEDICAL"
+    }
+
+    function to_url(str) {
+      return url_map[str];
+    }
+
 		$.get("uscb_csv.csv", function(csv) {
-			var rows = csv.split("\r\n")
-			var headers = rows.shift()
-			var cells = rows.map(function(el) {
+			var rows = csv.replace(/(\r\n|\r)/g, '\n').split("\n")
+			var headers = rows.shift().split(',')
+
+      console.log(headers)
+
+      var cells = rows.map(function(el) {
 				return el.split(',')
 			})
-			
-			for(var i = 0, len = cells.length; i < len; i++) {
-				var currentRow = cells[i]
-				
-				for(var j = 0, len = cells[0].length; j++) {
-					
-				}
-			}
-			
+
+      var output = {}
+
+      for(var k = 0, k_len = headers.length; k < k_len; k++) {
+        var header = headers.shift()
+
+        for(var i = 0, len = cells.length; i < len; i++) {
+          var currentRow = cells[i]
+          output[currentRow.shift()] = header
+        }
+      }
+
+      console.log(output)
+
+      client_id_map = output
 		})
+
+    $("#client-number-form").on("submit", function(e) {
+      e.preventDefault()
+
+      var v = $("#client_number").val()
+      if(client_id_map[v] !== undefined) {
+        window.location.href = to_url(client_id_map[v])
+      }
+    })
 	})
 </script>
 </head>
@@ -101,7 +135,7 @@ else
 	    </div>
 	</div>
 	<div id="content" style="margin-left:225px;">
-<form id="login-form" name="loginForm">
+<form id="client-number-form">
   <label>
     <span class="label">Client number: </span>
     <input type="text" name="client_number" value="" id="client_number">
@@ -120,9 +154,13 @@ else
 <script>
         function userCookie()
         {
+          try {
             var UMcustom7 = document.getElementById("UMcustom7").value;
             setCookie("username",UMcustom7,30);
             checkCookie();
+          } catch(e) {
+            console.error(e)
+          }
         }
 </script>
 </body>
